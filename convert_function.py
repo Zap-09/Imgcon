@@ -19,8 +19,10 @@ def get_valid_file_name(input_file,ext):
 
 def list_image_files_from_dir(folder_path = None):
 
-    if os.path.isfile(folder_path):
+    if folder_path and os.path.isfile(folder_path):
+        print(folder_path)
         return [folder_path]
+
 
     if folder_path:
         try:
@@ -76,7 +78,7 @@ def convert_image(input_image, ext:str, output_path = None):
 
 def main(ext,image_folder = None,output_folder = None):
     image_file_list = list_image_files_from_dir(image_folder)
-    if not image_folder:
+    if not image_file_list:
         print(f"No image files that ware in the supported list were found. {supported_ext}")
         sys.exit()
 
