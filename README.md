@@ -51,19 +51,33 @@ Then type
 
 ` imgcon -i your_file_name -e png -o converted  `
 
-Imgcon takes 3 arguments 
+Here the 3 arguments are 
 - -i is for input
 - -e is for the extension you want to convert to
-- -o is for the output folder (Optional)
+- -o is for the output folder
+
+You can also do ender a folder like this
+
+`imgcon -d "path_to_your/folder" -e webp -o converted`
+<br>
+
+-d flag will find all the files ending with png, jpg, jpeg and webp.<br> It will also look for images in the sub folders as well
+
 
 Note: If your file has space in the file name you need to surround it with double quotes. Example : <br>
-` imgcon -i "your file name" -e png -o "converted folder" `
-
--i and -e is required for the exe to run. -i can be a file or a folder. If you enter a folder it will convert all the images in that folder.<br>
-And if you want to convert all the images in the current folder use '/ ' as the -i argument.
-
-
--o argument is optional. If you don't pass a folder to it will convert the image where the exe was run from.<br> Example :<br>
-` imgcon -i "mine_file.png" -e webp `
+` imgcon -i "your file name" -e png -o "converted folder" `<br>
+<br>
+If -o was not given the files will be saved where the script was ran from.
 
 -o argument folder doesn't need to already exist. As long as the entered folder name is valid, it will make these folder.
+<br>
+
+There are other flags for different type of image format use "--help" for more info.
+## Todo
+### Stuff I want to add in the future
+
+- Add a filter to include and exclude file type when batch conversion
+
+- Add a settings config. Currently all default values are hardcoded.
+
+- Want to add more file types and functions
