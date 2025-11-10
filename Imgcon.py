@@ -3,6 +3,8 @@ import sys
 
 from imgcore.convert_func import *
 
+__version__ = "1.2.0"
+
 
 parser = argparse.ArgumentParser(description="Image format converter command line.")
 
@@ -45,13 +47,15 @@ parser.add_argument("-opt","--optimize",
                     help="Optimize value for png images default is False",
                     default=None,
                     required=False)
-
+parser.add_argument("-v", "--version",
+                    action="version",
+                    version=f"%(prog)s {__version__}")
 
 args = parser.parse_args()
 
 input_file = args.input_file
 
-output_folder = args.output_folder
+output_folder = args.output_folder or os.getcwd()
 
 extension = args.extension
 
@@ -65,6 +69,9 @@ lossless = str(args.lossless).lower() == "true" if args.lossless is not None els
 
 optimize = str(args.optimize).lower() == "true" if args.optimize is not None else False
 
+
+
+
 if not input_file and not directory:
     log("Either input_file or directory is needed for this script to run. Use -help for more info",t="Error")
     sys.exit(1)
@@ -74,13 +81,28 @@ if not extension:
     sys.exit(1)
 
 if directory:
-    convert_folder(folder_path=directory,
-                   ext=extension,
-                   output_path=output_folder,
-                   compress_level=compress_level,
-                   optimize=optimize,
-                   quality= quality,
-                   lossless=lossless)
+
+    if directory == "/":
+        this_directory = os.getcwd()
+
+        convert_folder(folder_path=this_directory,
+                       ext=extension,
+                       output_path=output_folder,
+                       compress_level=compress_level,
+                       optimize=optimize,
+                       quality=quality,
+                       lossless=lossless)
+    else:
+        if os.path.isdir(directory):
+            convert_folder(folder_path=directory,
+                           ext=extension,
+                           output_path=output_folder,
+                           compress_level=compress_level,
+                           optimize=optimize,
+                           quality= quality,
+                           lossless=lossless)
+        else:
+            log(f"Path '{directory}' was not found. Please make sure it exists.","error")
 else:
     match extension:
         case "png":

@@ -1,6 +1,9 @@
 from PIL import Image
 import os
+from natsort import natsorted
 from imgcore.utilities import log
+
+
 def convert_to_jpeg(image_file,
                     quality = None,
                     output_path = None,
@@ -44,7 +47,7 @@ def convert_to_jpeg(image_file,
             img.save(os.path.join(output_path,f"{base_name}.jpg"),"JPEG",quality = quality)
         else:
             img.save(f"{base_name}.jpg","JPEG",quality = quality)
-        log(f"Conversion complete {base_name}.jpg",t="info")
+        log(f"Conversion complete: {os.path.join(output_path,base_name)}.jpg",t="info")
 
 
 
@@ -93,7 +96,7 @@ def convert_to_png(image_file,
             img.save(os.path.join(output_path,f"{base_name}.png"),"PNG",optimize=optimize, compress_level=compress_level)
         else:
             img.save(f"{base_name}.png",optimize=optimize, compress_level=compress_level)
-        log(f"Conversion complete {base_name}.png",t="info")
+        log(f"Conversion complete: {os.path.join(output_path,base_name)}.png",t="info")
 
 
 
@@ -162,14 +165,13 @@ def convert_to_webp(image_file,
                 img.save(os.path.join(output_path,f"{base_name}.webp"),"WEBP",quality = quality,lossless = lossless,method = compress_level)
             else:
                 img.save(os.path.join(output_path,f"{base_name}.webp"),"WEBP",lossless = lossless,method = compress_level)
-            log(f"Conversion complete {base_name}.webp",t="info")
         else:
             if quality:
                 img.save(f"Conversion complete {base_name}.webp","WEBP",quality = quality,lossless = lossless,method = compress_level)
 
             else:
                 img.save(f"{base_name}.webp","WEBP",lossless = lossless,method = compress_level)
-        log(f"Conversion complete {base_name}.webp",t="info")
+        log(f"Conversion complete: {os.path.join(output_path,base_name)}.webp",t="info")
 
 
 
@@ -183,24 +185,33 @@ def get_all_file_paths(folder_path):
             if any(file_path.casefold().endswith(ext) for ext in extensions):
                 file_paths.append(file_path)
 
-    return file_paths
+    return natsorted(file_paths)
 
 def convert_folder(folder_path,ext:str,**kwargs):
     ext = ext.lower()
     all_image_path = get_all_file_paths(folder_path)
+
+    output_path = kwargs.get("output_path", folder_path)
+
     for image in all_image_path:
-        png_kwargs = {key: value for key, value in kwargs.items() if key in ["compress_level", "optimize","output_path"]}
 
-        jpeg_kwargs = {key: value for key, value in kwargs.items() if key in ["quality","output_path"]}
+        relative_path = str(os.path.relpath(image, folder_path))
+        output_image_path = os.path.join(output_path, relative_path)
+        output_folder = os.path.dirname(output_image_path)
 
-        webp_kwargs = {key: value for key, value in kwargs.items() if key in ["quality", "lossless","compress_level","output_path"]}
+
+        png_kwargs = {key: value for key, value in kwargs.items() if key in ["compress_level", "optimize",]}
+
+        jpeg_kwargs = {key: value for key, value in kwargs.items() if key in ["quality"]}
+
+        webp_kwargs = {key: value for key, value in kwargs.items() if key in ["quality", "lossless","compress_level"]}
 
         match ext:
             case "png":
-                convert_to_png(image,**png_kwargs)
+                convert_to_png(image,output_path=output_folder,**png_kwargs)
             case "jpg" | "jpeg":
-                convert_to_jpeg(image,**jpeg_kwargs)
+                convert_to_jpeg(image,output_path=output_folder, **jpeg_kwargs)
             case "webp":
-                convert_to_webp(image,**webp_kwargs)
+                convert_to_webp(image,output_path=output_folder, **webp_kwargs)
             case _:
                 log("Unknown extension type. Only supports png, jpeg, jpg, webp", t="error")

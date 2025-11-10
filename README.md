@@ -61,23 +61,31 @@ You can also do ender a folder like this
 `imgcon -d "path_to_your/folder" -e webp -o converted`
 <br>
 
--d flag will find all the files ending with png, jpg, jpeg and webp.<br> It will also look for images in the sub folders as well
+-d flag will find all the files ending with png, jpg, jpeg and webp.<br> It will also look for images in the sub folders as well. <br>
 
+You can also enter the current folder with -d flag with "/".<br> Example:
 
-Note: If your file has space in the file name you need to surround it with double quotes. Example : <br>
-` imgcon -i "your file name" -e png -o "converted folder" `<br>
-<br>
-If -o was not given the files will be saved where the script was ran from.
+`imgcon -d "/" -e png `
+
+It will find all the images in the current folder and subfolder too.
+
+If -o was not given the files will be saved where the script was run from.
 
 -o argument folder doesn't need to already exist. As long as the entered folder name is valid, it will make these folder.
 <br>
 
 There are other flags for different type of image format use "--help" for more info.
+
+Note: If your file has space in the file name you need to surround it with double quotes.<br>Example : 
+` imgcon -i "your file name" -e png -o "converted folder" `<br>
+<br>
+
 ## Todo
 ### Stuff I want to add in the future
 
 - Add a filter to include and exclude file type when batch conversion
 
 - Add a settings config. Currently all default values are hardcoded.
+- Add the option only to get images from the selected folder and not subfolders 
 
 - Want to add more file types and functions
