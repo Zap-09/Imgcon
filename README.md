@@ -13,6 +13,7 @@ Currently Supported file types
 
 - ### [How to install](#how-to-install-1)
 - ### [How to use](#how-to-use-1)
+- ### [Demo Video](#demo-video-1)
 
 
 
@@ -45,40 +46,54 @@ If you don't know how to add to PATH in System Environment Variables
 
 ## How to use
 
-Open command prompt and cd into your folder where you have your images that you want to convert.
+Open cmd and cd where you have your images. 
 
-Then type
+### For Single file convertion
 
-` imgcon -i your_file_name -e png -o converted  `
 
-Here the 3 arguments are 
-- -i is for input
-- -e is for the extension you want to convert to
-- -o is for the output folder
 
-You can also do ender a folder like this
+`imgcon -i "your file name" -e webp -o "conveted folder"` 
 
-`imgcon -d "path_to_your/folder" -e webp -o converted`
-<br>
+Here <br>
 
--d flag will find all the files ending with png, jpg, jpeg and webp.<br> It will also look for images in the sub folders as well. <br>
+-i flag takes the path/name of your image file <br>
 
-You can also enter the current folder with -d flag with "/".<br> Example:
+-e is the file type you want to convert to <br>
 
-`imgcon -d "/" -e png `
+-o is the output folder. This flag is optional. If you don't use it, the converted file will store where the script was run from. You can also pass a folder path, it will make those folders if the folder names are valid.
 
-It will find all the images in the current folder and subfolder too.
 
-If -o was not given the files will be saved where the script was run from.
+### For batch convertion
 
--o argument folder doesn't need to already exist. As long as the entered folder name is valid, it will make these folder.
-<br>
+`imgcon -d "path to your folder" -e webp -o conveted`
 
-There are other flags for different type of image format use "--help" for more info.
 
-Note: If your file has space in the file name you need to surround it with double quotes.<br>Example : 
-` imgcon -i "your file name" -e png -o "converted folder" `<br>
-<br>
+Here <br>
+
+-d takes a folder path and finds all the image files in that folder(Not sub folder) and converts them.
+
+If you want to include subfolders as well use: <br> 
+
+`imgcon -sd "path_to_your_folder" -e webp -o converted`
+
+This will find all the images in that folder and sub folders.
+
+
+There are more flags for specific file type that you can file by using <br>
+`imgcon --help` 
+
+
+## Demo Video 
+
+<details>
+<summary>Click here</summary>
+<video width="100%" height=auto controls style="max-width: 800px;">
+  <source src="Assets/Videos/demo.mp4" type="video/mp4">
+</video>
+
+</details>
+
+
 
 ## Todo
 ### Stuff I want to add in the future
@@ -86,6 +101,5 @@ Note: If your file has space in the file name you need to surround it with doubl
 - Add a filter to include and exclude file type when batch conversion
 
 - Add a settings config. Currently all default values are hardcoded.
-- Add the option only to get images from the selected folder and not subfolders 
 
 - Want to add more file types and functions

@@ -3,7 +3,7 @@ import sys
 
 from imgcore.convert_func import *
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 
 parser = argparse.ArgumentParser(description="Image format converter command line.")
@@ -13,9 +13,15 @@ parser.add_argument("-i", "--input_file",
                     required=False)
 
 parser.add_argument("-d","--directory",
-                    help="Enter the folder path to convert all image files in that folder",
+                    help="Enter the folder path to convert all images in that folder and subfolders",
                     default=None,
                     required=False)
+
+parser.add_argument("-sd","--sub_directory",
+                    help="Enter the folder path to convert all images on that folder only",
+                    default=None,
+                    required=False)
+
 
 parser.add_argument("-o", "--output_folder",
                     help="Enter output path, keep empty for current directory",
@@ -47,6 +53,7 @@ parser.add_argument("-opt","--optimize",
                     help="Optimize value for png images default is False",
                     default=None,
                     required=False)
+
 parser.add_argument("-v", "--version",
                     action="version",
                     version=f"%(prog)s {__version__}")
@@ -65,6 +72,8 @@ compress_level = args.compress_level
 
 directory = args.directory
 
+sub_directory = args.sub_directory
+
 lossless = str(args.lossless).lower() == "true" if args.lossless is not None else False
 
 optimize = str(args.optimize).lower() == "true" if args.optimize is not None else False
@@ -72,15 +81,23 @@ optimize = str(args.optimize).lower() == "true" if args.optimize is not None els
 
 
 
-if not input_file and not directory:
+if not input_file and not directory and not sub_directory:
     log("Either input_file or directory is needed for this script to run. Use -help for more info",t="Error")
+    sys.exit(1)
+
+if directory and sub_directory:
+    log("The script can not take both '-d' flag and '-sd' flag. Please use one.",t="error")
+    sys.exit(1)
+
+if input_file and directory or sub_directory:
+    log("The -d flag is exclusive with -d and -sd flag.",t="error")
     sys.exit(1)
 
 if not extension:
     log("No extension was given. Please use png, jpeg, jpg, webp",t="error")
     sys.exit(1)
 
-if directory:
+if directory or sub_directory:
 
     if directory == "/":
         this_directory = os.getcwd()
@@ -88,21 +105,49 @@ if directory:
         convert_folder(folder_path=this_directory,
                        ext=extension,
                        output_path=output_folder,
+                       nested_folder=False,
                        compress_level=compress_level,
                        optimize=optimize,
                        quality=quality,
                        lossless=lossless)
-    else:
+    elif sub_directory == "/":
+        this_directory = os.getcwd()
+
+        convert_folder(folder_path=this_directory,
+                       ext=extension,
+                       output_path=output_folder,
+                       nested_folder=True,
+                       compress_level=compress_level,
+                       optimize=optimize,
+                       quality=quality,
+                       lossless=lossless)
+
+    elif directory:
         if os.path.isdir(directory):
             convert_folder(folder_path=directory,
                            ext=extension,
                            output_path=output_folder,
+                           nested_folder=False,
                            compress_level=compress_level,
                            optimize=optimize,
                            quality= quality,
                            lossless=lossless)
         else:
             log(f"Path '{directory}' was not found. Please make sure it exists.","error")
+
+    elif sub_directory:
+        if os.path.isdir(sub_directory):
+            convert_folder(folder_path=directory,
+                           ext=extension,
+                           output_path=output_folder,
+                           nested_folder=True,
+                           compress_level=compress_level,
+                           optimize=optimize,
+                           quality= quality,
+                           lossless=lossless)
+        else:
+            log(f"Path '{sub_directory}' was not found. Please make sure it exists.","error")
+
 else:
     match extension:
         case "png":

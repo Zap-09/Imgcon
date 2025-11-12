@@ -175,7 +175,7 @@ def convert_to_webp(image_file,
 
 
 
-def get_all_file_paths(folder_path):
+def get_nested_file_paths(folder_path):
     extensions = (".png",".jpg",".jpeg",".webp")
     file_paths = []
 
@@ -187,9 +187,28 @@ def get_all_file_paths(folder_path):
 
     return natsorted(file_paths)
 
-def convert_folder(folder_path,ext:str,**kwargs):
+
+
+def get_files_from_folder(folder_path):
+    extensions = (".png", ".jpg", ".jpeg", ".webp")
+    file_paths = []
+
+    for items in os.listdir(folder_path):
+        file_path = os.path.join(folder_path,items)
+
+        if os.path.isfile(file_path) and any(file_path.casefold().endswith(ext) for ext in extensions):
+            file_paths.append(file_path)
+
+    return natsorted(file_paths)
+
+
+
+def convert_folder(folder_path,ext:str,nested_folder:bool = False,**kwargs):
     ext = ext.lower()
-    all_image_path = get_all_file_paths(folder_path)
+    if nested_folder:
+        all_image_path = get_nested_file_paths(folder_path)
+    else:
+        all_image_path = get_files_from_folder(folder_path)
 
     output_path = kwargs.get("output_path", folder_path)
 
