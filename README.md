@@ -13,7 +13,6 @@ Currently Supported file types
 
 - ### [How to install](#how-to-install-1)
 - ### [How to use](#how-to-use-1)
-- ### [Demo Video](#demo-video-1)
 
 
 
@@ -81,17 +80,6 @@ This will find all the images in that folder and sub folders.
 
 There are more flags for specific file type that you can file by using <br>
 `imgcon --help` 
-
-
-## Demo Video 
-
-<details>
-<summary>Click here</summary>
-<video width="100%" height=auto controls style="max-width: 800px;">
-  <source src="Assets/Videos/demo.mp4" type="video/mp4">
-</video>
-
-</details>
 
 
 
