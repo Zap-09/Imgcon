@@ -87,8 +87,7 @@ There are more flags for seasific file type that you can file by using <br>
 
 <details>
 <summary>Click here</summary>
-<video width="100%" height=auto controls>
-  <source src="Assets/Videos/demo.mp4" type="video/mp4">
+<video width="100%" height=auto controls src="Assets/Videos/demo.mp4">
 </video>
 
 </details>
