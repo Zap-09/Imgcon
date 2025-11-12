@@ -13,6 +13,7 @@ Currently Supported file types
 
 - ### [How to install](#how-to-install-1)
 - ### [How to use](#how-to-use-1)
+- ### [Demo Video](#demo-video-1)
 
 
 
@@ -59,7 +60,7 @@ Here <br>
 
 -e is the file type you want to convert to <br>
 
--o is the output folder. This flag is optional. If you don't use it, the converted file will store where the script was run from. You can also pass a folder path, it will make those folders if the folder names are valid.
+-o is the output folder. This flag is optional. If you don't use it the converted file will store where the script was run from. You can also pass a folder path it will make those folders if the folders name was valid.
 
 
 ### For batch convertion
@@ -71,15 +72,26 @@ Here <br>
 
 -d takes a folder path and finds all the image files in that folder(Not sub folder) and converts them.
 
-If you want to include subfolders as well use: <br> 
+If you want to inclue subfolders as well use: <br> 
 
 `imgcon -sd "path_to_your_folder" -e webp -o converted`
 
 This will find all the images in that folder and sub folders.
 
 
-There are more flags for specific file type that you can file by using <br>
+There are more flags for seasific file type that you can file by using <br>
 `imgcon --help` 
+
+
+## Demo Video 
+
+<details>
+<summary>Click here</summary>
+<video width="100%" height=auto controls>
+  <source src="Assets/Videos/demo.mp4" type="video/mp4">
+</video>
+
+</details>
 
 
 
