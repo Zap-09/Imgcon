@@ -48,7 +48,7 @@ If you don't know how to add to PATH in System Environment Variables
 
 Open cmd and cd where you have your images. 
 
-### For Single file convertion
+### For Single file conversion
 
 
 
@@ -72,14 +72,14 @@ Here <br>
 
 -d takes a folder path and finds all the image files in that folder(Not sub folder) and converts them.
 
-If you want to inclue subfolders as well use: <br> 
+If you want to include subfolders as well use: <br> 
 
 `imgcon -sd "path_to_your_folder" -e webp -o converted`
 
 This will find all the images in that folder and sub folders.
 
 
-There are more flags for seasific file type that you can file by using <br>
+There are more flags for specific file type that you can file by using <br>
 `imgcon --help` 
 
 
