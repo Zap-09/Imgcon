@@ -2,6 +2,12 @@ from PIL import Image
 import os
 from natsort import natsorted
 from imgcore.utilities import log
+from imgcore.config import Config
+
+
+quality_warn = False
+compress_level_warn = False
+lossless_and_quality_warn = False
 
 
 def convert_to_jpeg(image_file,
@@ -9,28 +15,35 @@ def convert_to_jpeg(image_file,
                     output_path = None,
                     color_mode = None):
 
+    if not quality:
+        quality = Config.JPEG.quality
 
+    if not color_mode:
+        color_mode = Config.JPEG.color_mode
+
+
+    global quality_warn
     if not os.path.exists(image_file):
         log(f"Could not locate file: {image_file}","error")
         return
 
-    if quality is None:
-        quality = 75
-
-    if color_mode is None:
-        color_mode = "RGB"
 
     if not color_mode in ["RGB","L"]:
         log("Unknown color mode. Please use 'RGB', 'L'",t="error")
         return
 
     if quality > 100:
-        log("Quality Value was set over 100. Anything above 100 is redundant. Setting quality value to 100","warn")
         quality = 100
+        if not quality_warn:
+            log("Quality Value was set over 100. Anything above 100 is redundant. Setting quality value to 100","warn")
+            quality_warn = True
 
     elif quality < 0:
-        log("Quality Value was set under 0. Anything under 0 is redundant. Setting quality value to 0","warn")
         quality = 0
+        if not quality_warn:
+            log("Quality Value was set under 0. Anything under 0 is redundant. Setting quality value to 0","warn")
+            quality_warn = True
+
 
     with Image.open(image_file) as img:
         img = img.convert(color_mode)
@@ -44,9 +57,17 @@ def convert_to_jpeg(image_file,
             except:
                 log("Invalid file path",t="error")
                 return
-            img.save(os.path.join(output_path,f"{base_name}.jpg"),"JPEG",quality = quality)
+            try:
+                img.save(os.path.join(output_path,f"{base_name}.jpg"),"JPEG",quality = quality)
+            except Exception as e:
+                log(f"Error saving image: {e}","error")
+                return
         else:
-            img.save(f"{base_name}.jpg","JPEG",quality = quality)
+            try:
+                img.save(f"{base_name}.jpg","JPEG",quality = quality)
+            except Exception as e:
+                log(f"Error saving image: {e}","error")
+                return
         log(f"Conversion complete: {os.path.join(output_path,base_name)}.jpg",t="info")
 
 
@@ -54,48 +75,66 @@ def convert_to_jpeg(image_file,
 def convert_to_png(image_file,
                    output_path = None,
                    color_mode = None,
-                   optimize=False,
-                   compress_level=None):
+                   optimize = False,
+                   compress_level = None):
+
+    if not compress_level:
+        compress_level = Config.PNG.compress_level
+
+    if not optimize:
+        optimize = Config.PNG.optimize
+
+    if not color_mode:
+        color_mode = Config.PNG.color_mode
+
+
+    global compress_level_warn
 
     if not os.path.exists(image_file):
         log(f"Could not locate file: {image_file}","error")
         return
 
-    if optimize is None:
-        optimize = False
-
-    if compress_level is None:
-        compress_level = 6
-
-    if color_mode is None:
-        color_mode = "RGBA"
-
     if not color_mode in ["RGBA","RGB","L"]:
         log("Unknown color mode. Please use 'RGBA', 'RGB', 'L'",t="error")
         return
     if compress_level > 9:
-        log("Compress level was set over 9. Anything above 9 is redundant. Setting Compress level to 9", "warn")
         compress_level = 9
+        if not compress_level_warn:
+            log("Compress level was set over 9. Anything above 9 is redundant. Setting Compress level to 9", "warn")
+            compress_level_warn = True
 
     elif compress_level < 0:
-        log("Compress level was set under 0. Anything under 0 is redundant. Setting Compress level to 0", "warn")
         compress_level = 0
+        if not compress_level_warn:
+            log("Compress level was set under 0. Anything under 0 is redundant. Setting Compress level to 0", "warn")
+            compress_level_warn = True
 
-    with Image.open(image_file) as img:
-        img = img.convert(color_mode)
+    try:
+        with Image.open(image_file) as img:
+            img = img.convert(color_mode)
+    except:
+        log(f"Invalid color mode","error")
+
 
         file_name = os.path.basename(image_file)
         base_name, _ = os.path.splitext(file_name)
-
         if output_path:
             try:
                 os.makedirs(output_path,exist_ok=True)
             except:
                 log("Invalid file path",t="error")
                 return
-            img.save(os.path.join(output_path,f"{base_name}.png"),"PNG",optimize=optimize, compress_level=compress_level)
+            try:
+                img.save(os.path.join(output_path,f"{base_name}.png"),"PNG",optimize=optimize, compress_level=compress_level)
+            except Exception as e:
+                log(f"Error saving image: {e}","error")
+                return
         else:
-            img.save(f"{base_name}.png",optimize=optimize, compress_level=compress_level)
+            try:
+                img.save(f"{base_name}.png",optimize=optimize, compress_level=compress_level)
+            except Exception as e:
+                log(f"Error saving image: {e}","error")
+                return
         log(f"Conversion complete: {os.path.join(output_path,base_name)}.png",t="info")
 
 
@@ -107,70 +146,94 @@ def convert_to_webp(image_file,
                     lossless = False,
                     compress_level = None):
 
+    if not color_mode:
+        color_mode = Config.WEBP.color_mode
+
+    if not quality:
+        quality = Config.WEBP.quality
+
+    if not lossless:
+        lossless = Config.WEBP.lossless
+
+    if not compress_level:
+        compress_level = Config.WEBP.compress_level
+
+    global quality_warn
+    global compress_level_warn
+    global lossless_and_quality_warn
+
+
     if not os.path.exists(image_file):
         log(f"Could not locate file: {image_file}","error")
         return
 
-    if color_mode is None:
-        color_mode = "RGBA"
 
     if not color_mode in ["RGBA","RGB","LA","L"]:
         log("Unknown color mode. Please use 'RGBA', 'RGB', 'L', 'LA'",t="error")
         return
 
-    if quality is None:
-        quality = 75
-
-    if compress_level is None:
-        compress_level = 4
-
-    if lossless and quality == 75:
-        quality = None
 
     if quality and lossless:
-        log("Both Quality and Lossless parameters are set to true. So Quality parameters will be ignored","warn")
         quality = None
-
+        if not lossless_and_quality_warn:
+            log("Both Quality and Lossless parameters are set to true. So Quality parameters will be ignored","warn")
+            lossless_and_quality_warn = True
 
     if quality and not lossless:
         if quality > 100:
-            log("Quality Value was set over 100. Anything above 100 is redundant. Setting quality value to 100", "warn")
             quality = 100
-
+            if not quality_warn:
+                log("Quality Value was set over 100. Anything above 100 is redundant. Setting quality value to 100", "warn")
+                quality_warn = True
         elif quality < 0:
-            log("Quality Value was set under 0. Anything under 0 is redundant. Setting quality value to 0", "warn")
             quality = 0
+            if not quality_warn:
+                log("Quality Value was set under 0. Anything under 0 is redundant. Setting quality value to 0","warn")
+                quality_warn = True
 
     if compress_level > 6:
-        log("Compress level was set over 6. Anything above 6 is redundant. Setting Compress level to 6", "warn")
         compress_level = 6
+        if compress_level_warn:
+            log("Compress level was set over 6. Anything above 6 is redundant. Setting Compress level to 6", "warn")
 
     elif compress_level < 0:
-        log("Compress level was set under 0. Anything under 0 is redundant. Setting Compress level to 0", "warn")
         compress_level = 0
+        if compress_level_warn:
+            log("Compress level was set under 0. Anything under 0 is redundant. Setting Compress level to 0", "warn")
 
 
     with Image.open(image_file) as img:
-        img.convert(color_mode)
+        try:
+            img.convert(color_mode)
+        except:
+            log(f"Invalid color mode","error")
+
         file_name = os.path.basename(image_file)
         base_name, _ = os.path.splitext(file_name)
-
         if output_path:
             try:
                 os.makedirs(output_path, exist_ok=True)
             except:
                 log("Invalid file path", t="error")
                 return
-            if quality:
-                img.save(os.path.join(output_path,f"{base_name}.webp"),"WEBP",quality = quality,lossless = lossless,method = compress_level)
-            else:
-                img.save(os.path.join(output_path,f"{base_name}.webp"),"WEBP",lossless = lossless,method = compress_level)
+            try:
+                if quality:
+                    img.save(os.path.join(output_path,f"{base_name}.webp"),"WEBP",quality = quality,lossless = lossless,method = compress_level)
+                else:
+                    img.save(os.path.join(output_path,f"{base_name}.webp"),"WEBP",lossless = lossless,method = compress_level)
+            except Exception as e:
+                log(f"Error saving image: {e}","error")
+                return
         else:
-            if quality:
-                img.save(f"Conversion complete {base_name}.webp","WEBP",quality = quality,lossless = lossless,method = compress_level)
+            try:
+                if quality:
+                    img.save(f"Conversion complete {base_name}.webp","WEBP",quality = quality,lossless = lossless,method = compress_level)
+                else:
+                    img.save(f"{base_name}.webp","WEBP",lossless = lossless,method = compress_level)
+            except Exception as e:
+                log(f"Error saving image: {e}","error")
+                return
 
-            else:
-                img.save(f"{base_name}.webp","WEBP",lossless = lossless,method = compress_level)
         log(f"Conversion complete: {os.path.join(output_path,base_name)}.webp",t="info")
 
 

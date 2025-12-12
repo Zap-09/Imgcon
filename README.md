@@ -40,9 +40,20 @@ If you don't know how to add to PATH in System Environment Variables
  <br>
  6. <img src="Assets/Images/guide_6.jpg">
  <br>
-
-
 </details> 
+
+### Building it your Self
+
+If you want to build the exe yourself <br>
+_Ignore this part if you downloaded the exe from [releases](https://github.com/Zap-09/Imgcon/releases) page_
+
+1. Clone this repo and cd into it.
+2. Make a virtual environment (optional)
+3. Open a terminal and run <br>
+`pip install -r dependencies.txt` <br>
+4. Then run <br>
+`pyinstaller --onefile --add-data "imgcore;imgcore" imgcon.py` <br>
+You should have your exe in `dist` folder
 
 ## How to use
 
@@ -100,6 +111,9 @@ There are more flags for specific file type that you can file by using <br>
 
 - Add a filter to include and exclude file type when batch conversion
 
-- Add a settings config. Currently all default values are hardcoded.
+- ~~Add a settings config. Currently all default values are hardcoded.~~ <br>
+  - This was added in 1.4.0
 
 - Want to add more file types and functions
+
+- Want to make a GUI version of this program 

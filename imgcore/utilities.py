@@ -1,11 +1,19 @@
+import platform
+import subprocess
 import colorama
 colorama.init()
 
 
-level = "info"
+from imgcore.config import Config
+
+level = Config.log_level
 
 
 def log(msg, t="info"):
+    valid_level = ["info", "warn", "error","--info","--warn","--error"]
+    if not t in valid_level:
+        print(f"'{t}' is not a valid log level. Use one of the in '{valid_level}'")
+
     if level == "none":
         return
 
@@ -40,3 +48,8 @@ def log(msg, t="info"):
             print(f"{warn_color}{msg}{reset_color}")
         elif t == "error":
             print(f"{error_color}{msg}{reset_color}")
+
+
+def open_file_with_default_app(file_path):
+    if platform.system() == "Windows":
+        subprocess.Popen(["start", file_path],shell=True)

@@ -1,9 +1,11 @@
 import argparse
 import sys
+import os
+from imgcore.config import config_path
+from imgcore.convert_func import convert_to_png, convert_to_webp, convert_to_jpeg, convert_folder
+from imgcore.utilities import log, open_file_with_default_app
 
-from imgcore.convert_func import *
-
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 
 
 parser = argparse.ArgumentParser(description="Image format converter command line.")
@@ -58,6 +60,10 @@ parser.add_argument("-v", "--version",
                     action="version",
                     version=f"%(prog)s {__version__}")
 
+parser.add_argument("-config","--open_config",
+                    help="Open the configuration file on a text editor",
+                    action="store_true")
+
 args = parser.parse_args()
 
 input_file = args.input_file
@@ -78,11 +84,15 @@ lossless = str(args.lossless).lower() == "true" if args.lossless is not None els
 
 optimize = str(args.optimize).lower() == "true" if args.optimize is not None else False
 
-
+if args.open_config:
+    if os.path.isfile(config_path):
+        open_file_with_default_app(config_path)
+        sys.exit(0)
+    sys.exit(0)
 
 
 if not input_file and not directory and not sub_directory:
-    log("Either input_file or directory is needed for this script to run. Use -help for more info",t="Error")
+    log("Either input_file or directory is needed for this script to run. Use -help for more info",t="error")
     sys.exit(1)
 
 if directory and sub_directory:
